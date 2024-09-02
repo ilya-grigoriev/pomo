@@ -2,4 +2,5 @@ CC=cc
 CFLAGS=-g -lncurses
 
 all:
-	$(CC) $(CFLAGS) src/*.c -o pomo
+	@mkdir -p bin/
+	$(CC) $(CFLAGS) src/*.c -o bin/pomo
