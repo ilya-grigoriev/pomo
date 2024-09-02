@@ -102,7 +102,7 @@ void print_help_items(int row, int col)
 	for (int i = 0; i < HELP_ITEMS; i++)
 	{
 		center_row = row/2 + i;
-		center_col = col * 0.4;
+		center_col = col * 0.425;
 
 		cur_line = help_items[i];
 		mvprintw(center_row, center_col, "%s", cur_line);

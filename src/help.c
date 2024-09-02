@@ -16,8 +16,10 @@ char help_items[HELP_ITEMS][100] = {
 	"`j` -- move down",
 	"`k` -- move up",
 	"`q` -- quit from current window",
-	"`l` -- enter to window or increase size of something",
-	"`h` -- decrease size of something",
+	"`l` -- enter to window",
+	"`h` -- same as `q`",
+	"`-` -- decrease size of something",
+	"`+` -- increase size of something",
 };
 
 void help(int row, int col)
@@ -26,6 +28,7 @@ void help(int row, int col)
 
 	print_help_logo(row, col);
 	print_help_items(row, col);
+	noecho();
 	while ((ch = getch()) != 'q' && (ch != 'h'))
 	{
 		print_error("unknown key `%c`", ch);
