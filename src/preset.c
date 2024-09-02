@@ -1,13 +1,13 @@
 #include "preset.h"
 
-const char logo[LOGO_ROW][30] = {
+char logo[LOGO_ROW][30] = {
 	R"( ____   ___  __  __  ___  )",
 	R"(|  _ \ / _ \|  \/  |/ _ \ )",
 	R"(| |_) | | | | |\/| | | | |)",
 	R"(|  __/| |_| | |  | | |_| |)",
 	R"(|_|    \___/|_|  |_|\___/ )"
 };
-const char menu[MENU_ITEMS][30] = {
+char menu[MENU_ITEMS][30] = {
 	"Play",
 	"Settings",
 	"Help",

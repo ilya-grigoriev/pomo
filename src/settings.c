@@ -18,12 +18,21 @@ int settings_int[SETTINGS_ITEMS] = {
 };
 int cur_settings_active_item = 1;
 
+char settings_logo[SETTINGS_LOGO_ROW][100] = {
+	R"( ____  _____ _____ _____ ___ _   _  ____ ____  )",
+	R"(/ ___|| ____|_   _|_   _|_ _| \ | |/ ___/ ___| )",
+	R"(\___ \|  _|   | |   | |  | ||  \| | |  _\___ \ )",
+	R"( ___) | |___  | |   | |  | || |\  | |_| |___) |)",
+	R"(|____/|_____| |_|   |_| |___|_| \_|\____|____/ )",
+};
+
 void settings(int row, int col, WINDOW *settings_win)
 {
 	int ch;
 
+	print_settings_logo(row, col);
 	print_settings_window(row, col);
-	while ((ch = getch()) != 'q')
+	while ((ch = getch()) != 'q' && (ch != 'h'))
 	{
 		if (ch == 'j')
 			cur_settings_active_item += (cur_settings_active_item+1 <= SETTINGS_ITEMS) ? 1 : 0;
@@ -33,6 +42,7 @@ void settings(int row, int col, WINDOW *settings_win)
 			print_error("unknown key `%c`", ch);
 
 		delwin(settings_win);
+		print_settings_logo(row, col);
 		print_settings_window(row, col);
 		settings_win = create_newwin(row, col, 0, 0);
 	}

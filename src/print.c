@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "preset.h"
 #include "settings.h"
+#include "help.h"
 
 void print_logo(int row, int col)
 {
@@ -50,11 +51,11 @@ void print_settings_window(int row, int col)
 	for (int i = 0; i < SETTINGS_ITEMS; i++) {
 		sprintf(cur_line, settings_str[i], settings_int[i]);
 		center_row = row/2 + i;
-		center_col = (col-strlen(cur_line)) / 2;
+		center_col = col * 0.45;
 
 		if (i+1 == cur_settings_active_item) {
 			attron(A_BOLD);
-			mvprintw(center_row, center_col - ARROW_COL, "%s", cur_line);
+			mvprintw(center_row, center_col, "%s", cur_line);
 			attroff(A_BOLD);
 		}
 		else {
@@ -63,8 +64,49 @@ void print_settings_window(int row, int col)
 			attroff(A_DIM);
 		}
 	}
+}
 
-	free(cur_line);
+void print_settings_logo(int row, int col)
+{
+	char *cur_line = malloc(sizeof(char *));
+	int center_row, center_col;
+
+	for (int i = 0; i < SETTINGS_LOGO_ROW; i++) {
+		cur_line = settings_logo[i];
+		center_row = row/2 - SETTINGS_LOGO_MARGIN_OF_CENTER + i;
+		center_col = (col-strlen(cur_line)) / 2;
+
+		mvprintw(center_row, center_col, "%s", cur_line);
+	}
+}
+
+void print_help_logo(int row, int col)
+{
+	char *cur_line = malloc(sizeof(char *));
+	int center_row, center_col;
+
+	for (int i = 0; i < HELP_LOGO_ROW; i++) {
+		cur_line = help_logo[i];
+		center_row = row/2 - HELP_LOGO_MARGIN_OF_CENTER + i;
+		center_col = (col-strlen(cur_line)) / 2;
+
+		mvprintw(center_row, center_col, "%s", cur_line);
+	}
+}
+
+void print_help_items(int row, int col)
+{
+	char *cur_line = malloc(sizeof(char *));
+	int center_row, center_col;
+
+	for (int i = 0; i < HELP_ITEMS; i++)
+	{
+		center_row = row/2 + i;
+		center_col = col * 0.4;
+
+		cur_line = help_items[i];
+		mvprintw(center_row, center_col, "%s", cur_line);
+	}
 }
 
 void print_error(char *error_message_template, ...)
