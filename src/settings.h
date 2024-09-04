@@ -1,6 +1,6 @@
 void settings(int row, int col, WINDOW *settings_win);
 
-#define SETTINGS_ITEMS 4
+#define SETTINGS_ITEMS 5
 extern char settings_str[SETTINGS_ITEMS][30];
 extern int settings_int[SETTINGS_ITEMS];
 extern int cur_settings_active_item;

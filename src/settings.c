@@ -9,6 +9,7 @@ char settings_str[SETTINGS_ITEMS][30] = {
 	"Short pause: <%d>",
 	"Pomodoros: <%d>",
 	"Work time: <%d>",
+	"RESET",
 };
 int settings_int[SETTINGS_ITEMS] = {
 	LONG_PAUSE,
@@ -32,12 +33,22 @@ void settings(int row, int col, WINDOW *settings_win)
 
 	print_settings_logo(row, col);
 	print_settings_window(row, col);
-	while ((ch = getch()) != 'q' && (ch != 'h'))
+	while ((ch = getch()) != 'q')
 	{
 		if (ch == 'j')
 			cur_settings_active_item += (cur_settings_active_item+1 <= SETTINGS_ITEMS) ? 1 : 0;
 		else if (ch == 'k')
 			cur_settings_active_item -= (cur_settings_active_item-1 >= 1) ? 1 : 0;
+		else if (ch == 'l')
+			if (cur_settings_active_item != SETTINGS_ITEMS)
+				settings_int[cur_settings_active_item-1] += 1;
+			else
+				print_error("unavailable motion");
+		else if (ch == 'h') 
+			if (cur_settings_active_item != SETTINGS_ITEMS)
+				settings_int[cur_settings_active_item-1] -= 1;
+			else
+				print_error("unavailable motion");
 		else
 			print_error("unknown key `%c`", ch);
 

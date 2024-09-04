@@ -49,7 +49,11 @@ void print_settings_window(int row, int col)
 	int center_row, center_col;
 
 	for (int i = 0; i < SETTINGS_ITEMS; i++) {
-		sprintf(cur_line, settings_str[i], settings_int[i]);
+		if (i+1 != SETTINGS_ITEMS)
+			sprintf(cur_line, settings_str[i], settings_int[i]);
+		else
+			sprintf(cur_line, settings_str[i]);
+
 		center_row = row/2 + i;
 		center_col = col * 0.45;
 
