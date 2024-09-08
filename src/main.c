@@ -12,6 +12,9 @@ int main()
 	initscr();			
 	curs_set(0);
 	getmaxyx(stdscr,row,col);
+
+	start_color();
+	init_pair(1, COLOR_RED, COLOR_BLACK);
 	
 	initscr();
 	cbreak();
