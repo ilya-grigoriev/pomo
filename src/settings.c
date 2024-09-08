@@ -39,14 +39,17 @@ void settings(int row, int col, WINDOW *settings_win)
 			cur_settings_active_item += (cur_settings_active_item+1 <= SETTINGS_ITEMS) ? 1 : 0;
 		else if (ch == 'k')
 			cur_settings_active_item -= (cur_settings_active_item-1 >= 1) ? 1 : 0;
-		else if (ch == 'l')
+		else if (ch == 'l' || ch == KEY_RIGHT)
 			if (cur_settings_active_item != SETTINGS_ITEMS)
 				settings_int[cur_settings_active_item-1] += 1;
 			else
 				print_error("unavailable motion");
-		else if (ch == 'h') 
+		else if (ch == 'h' || ch == KEY_LEFT) 
 			if (cur_settings_active_item != SETTINGS_ITEMS)
-				settings_int[cur_settings_active_item-1] -= 1;
+				if (settings_int[cur_settings_active_item-1] - 1 > 0)
+					settings_int[cur_settings_active_item-1] -= 1;
+				else
+					print_error("min value is 1\n");
 			else
 				print_error("unavailable motion");
 		else
