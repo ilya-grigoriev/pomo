@@ -1,5 +1,5 @@
 #define HELP_ITEMS 7
-extern char help_items[HELP_ITEMS][100];
+extern char help_items[HELP_ITEMS][2][100];
 
 void help(int row, int col);
 

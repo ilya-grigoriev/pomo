@@ -12,14 +12,14 @@ char help_logo[HELP_LOGO_ROW][30] = {
 	R"(|_| |_|_____|_____|_|    )",
 };
 
-char help_items[HELP_ITEMS][100] = {
-	"`j` -- move down",
-	"`k` -- move up",
-	"`q` -- quit from current window",
-	"`l` -- enter to window",
-	"`h` -- same as `q`",
-	"`-` -- decrease size of something",
-	"`+` -- increase size of something",
+char help_items[HELP_ITEMS][2][100] = {
+	{"j", "\tmove down"},
+	{"k", "\tmove up"},
+	{"q", "\tquit from current window"},
+	{"l", "\tenter to window"},
+	{"h", "\tsame as `q`"},
+	{"-", "\tdecrease size of something"},
+	{"+", "\tincrease size of something"},
 };
 
 void help(int row, int col)
@@ -29,8 +29,8 @@ void help(int row, int col)
 	print_help_logo(row, col);
 	print_help_items(row, col);
 	noecho();
-	while ((ch = getch()) != 'q' && (ch != 'h'))
+	while ((ch = getch()) != 'q')
 	{
-		print_error("unknown key `%c`", ch);
+		print_error("unavailable key `%c`", ch);
 	}
 }

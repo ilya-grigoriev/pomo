@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "help.h"
 
+
 void print_logo(int row, int col)
 {
 	char *cur_line;
@@ -49,13 +50,17 @@ void print_settings_window(int row, int col)
 	int center_row, center_col;
 
 	for (int i = 0; i < SETTINGS_ITEMS; i++) {
-		if (i+1 != SETTINGS_ITEMS)
-			sprintf(cur_line, settings_str[i], settings_int[i]);
-		else
-			sprintf(cur_line, settings_str[i]);
-
 		center_row = row/2 + i;
-		center_col = col * 0.45;
+		center_col = col * 0.4575;
+
+		if (i+1 != SETTINGS_ITEMS && settings_str[i] != "")
+			sprintf(cur_line, settings_str[i], settings_int[i]);
+		else {
+			mvprintw(center_row, center_col, "");
+			center_row++;
+			sprintf(cur_line, settings_str[i]);
+			center_col = (col - strlen(cur_line)) / 2;
+		}
 
 		if (i+1 == cur_settings_active_item) {
 			attron(A_BOLD);
@@ -100,7 +105,8 @@ void print_help_logo(int row, int col)
 
 void print_help_items(int row, int col)
 {
-	char *cur_line = malloc(sizeof(char *));
+	char *cur_hotkey = malloc(sizeof(char *));
+	char *cur_help_message = malloc(sizeof(char *));
 	int center_row, center_col;
 
 	for (int i = 0; i < HELP_ITEMS; i++)
@@ -108,8 +114,14 @@ void print_help_items(int row, int col)
 		center_row = row/2 + i;
 		center_col = col * 0.425;
 
-		cur_line = help_items[i];
-		mvprintw(center_row, center_col, "%s", cur_line);
+		cur_hotkey = help_items[i][0];
+		cur_help_message = help_items[i][1];
+		
+		attron(A_BOLD);
+		mvprintw(center_row, center_col, "%s", cur_hotkey);
+		attroff(A_BOLD);
+
+		mvprintw(center_row, center_col+1, "%s", cur_help_message);
 	}
 }
 
@@ -120,7 +132,11 @@ void print_error(char *error_message_template, ...)
 
 	char *error_message = malloc(sizeof(char *));
 	vsprintf(error_message, error_message_template, args);
+
+	attron(COLOR_PAIR(1));
 	mvprintw(LINES - 2, 2, "%s", error_message);
+	attroff(COLOR_PAIR(1));
+
 	free(error_message);
 
 	va_end(args);
