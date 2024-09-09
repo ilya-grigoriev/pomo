@@ -3,6 +3,7 @@
 #include "preset.h"
 #include "window.h"
 #include "settings.h"
+#include "config.def.h"
 
 char settings_str[SETTINGS_ITEMS][30] = {
 	"Long pause: <%d>",
@@ -10,12 +11,6 @@ char settings_str[SETTINGS_ITEMS][30] = {
 	"Pomodoros: <%d>",
 	"Work time: <%d>",
 	"RESET",
-};
-int settings_int[SETTINGS_ITEMS] = {
-	LONG_PAUSE,
-	SHORT_PAUSE,
-	POMODOROS,
-	WORK_TIME,
 };
 int cur_settings_active_item = 1;
 
@@ -27,17 +22,24 @@ char settings_logo[SETTINGS_LOGO_ROW][100] = {
 	R"(|____/|_____| |_|   |_| |___|_| \_|\____|____/ )",
 };
 
+int is_error_in_check_config_data();
+
 void settings(int row, int col, WINDOW *settings_win)
 {
 	int ch;
+
+	if (is_error_in_check_config_data()) {
+		print_error("invalid config.def.h");
+		return;
+	}
 
 	print_settings_logo(row, col);
 	print_settings_window(row, col);
 	while ((ch = getch()) != 'q')
 	{
-		if (ch == 'j')
+		if (ch == 'j' || ch == KEY_DOWN)
 			cur_settings_active_item += (cur_settings_active_item+1 <= SETTINGS_ITEMS) ? 1 : 0;
-		else if (ch == 'k')
+		else if (ch == 'k' || ch == KEY_UP)
 			cur_settings_active_item -= (cur_settings_active_item-1 >= 1) ? 1 : 0;
 		else if (ch == 'l' || ch == KEY_RIGHT)
 			if (cur_settings_active_item != SETTINGS_ITEMS)
@@ -60,4 +62,11 @@ void settings(int row, int col, WINDOW *settings_win)
 		print_settings_window(row, col);
 		settings_win = create_newwin(row, col, 0, 0);
 	}
+
+	cur_settings_active_item = 1;
+}
+
+int is_error_in_check_config_data(void)
+{
+	return (LONG_PAUSE < 1) || (SHORT_PAUSE < 1) || (POMODOROS < 1) || (WORK_TIME < 1);
 }
