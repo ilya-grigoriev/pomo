@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include "preset.h"
 #include "settings.h"
+#include "config.def.h"
 #include "help.h"
-
 
 void print_logo(int row, int col)
 {
@@ -44,6 +44,11 @@ void print_menu(int row, int col)
 	}
 }
 
+int is_active_button(int n)
+{
+	return n == cur_settings_active_item;
+}
+
 void print_settings_window(int row, int col)
 {
 	char *cur_line = malloc(sizeof(char *));
@@ -53,8 +58,8 @@ void print_settings_window(int row, int col)
 		center_row = row/2 + i;
 		center_col = col * 0.4575;
 
-		if (i+1 != SETTINGS_ITEMS && settings_str[i] != "")
-			sprintf(cur_line, settings_str[i], settings_int[i]);
+		if (i+1 != SETTINGS_ITEMS)
+			sprintf(cur_line, settings_str[i], settings_vals[i]);
 		else {
 			mvprintw(center_row, center_col, "");
 			center_row++;
@@ -62,7 +67,7 @@ void print_settings_window(int row, int col)
 			center_col = (col - strlen(cur_line)) / 2;
 		}
 
-		if (i+1 == cur_settings_active_item) {
+		if (is_active_button(i+1)) {
 			attron(A_BOLD);
 			mvprintw(center_row, center_col, "%s", cur_line);
 			attroff(A_BOLD);
@@ -123,6 +128,32 @@ void print_help_items(int row, int col)
 
 		mvprintw(center_row, center_col+1, "%s", cur_help_message);
 	}
+}
+
+void print_work_clock(int row, int col, int secs, int is_stop)
+{
+	int mins, rest_secs;
+	char *message = "Current time";
+
+	mins = secs / 60;
+	rest_secs = secs - (mins * 60);
+
+	if (is_stop == 0) {
+		attron(A_BOLD);
+		mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
+		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
+		attroff(A_BOLD);
+	}
+	else {
+		attron(A_BOLD);
+		mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
+		attroff(A_BOLD);
+		attron(A_DIM);
+		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
+		attroff(A_DIM);
+	}
+
+	refresh(); // needed for display screen
 }
 
 void print_error(char *error_message_template, ...)
