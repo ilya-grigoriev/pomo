@@ -6,11 +6,11 @@
 #include "print.h"
 #include "preset.h"
 #include "settings.h"
-
-#define KEY_ENTER 10
+#include "play.h"
 
 int is_menu_active_window = 1;
 
+int is_play_button(char ch);
 int is_settings_button(char ch);
 int is_help_button(char ch);
 
@@ -21,13 +21,20 @@ void startpage(int row, int col)
 	print_logo(row, col);
 	print_menu(row, col);
 	WINDOW *menu_win = create_newwin(row, col, 0, 0);
-	WINDOW *settings_win, *help_win;
+	WINDOW *play_win, *settings_win, *help_win;
 
 	while ((ch = getch()) != 'q') {
 		if (ch == 'j' || ch == KEY_DOWN)
 			cur_menu_active_item += (cur_menu_active_item+1 <= MENU_ITEMS) ? 1 : 0;
 		else if (ch == 'k' || ch == KEY_UP)
 			cur_menu_active_item -= (cur_menu_active_item-1 >= 1) ? 1 : 0;
+		else if (is_play_button(ch)) {
+			is_menu_active_window = 0;
+			delwin(menu_win);
+
+			play_win = create_newwin(row, col, 0, 0);
+			play(row, col, play_win);
+		}
 		else if (is_settings_button(ch)) {
 			is_menu_active_window = 0;
 			delwin(menu_win);
@@ -58,12 +65,17 @@ void startpage(int row, int col)
 	}
 }
 
+int is_play_button(char ch)
+{
+	return (ch == 'l' || ch == ENTER) && cur_menu_active_item == PLAY;
+}
+
 int is_settings_button(char ch)
 {
-	return (ch == 'l' || ch == KEY_ENTER) && cur_menu_active_item == SETTINGS;
+	return (ch == 'l' || ch == ENTER) && cur_menu_active_item == SETTINGS;
 }
 
 int is_help_button(char ch)
 {
-	return (ch == 'l' || ch == KEY_ENTER) && cur_menu_active_item == HELP;
+	return (ch == 'l' || ch == ENTER) && cur_menu_active_item == HELP;
 }
