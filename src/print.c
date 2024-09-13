@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "config.def.h"
 #include "help.h"
+#include "print.h"
 
 void print_logo(int row, int col)
 {
@@ -130,15 +131,15 @@ void print_help_items(int row, int col)
 	}
 }
 
-void print_work_clock(int row, int col, int secs, int is_stop)
+void print_clock(int row, int col, struct Play Play_T)
 {
 	int mins, rest_secs;
 	char *message = "Current time";
 
-	mins = secs / 60;
-	rest_secs = secs - (mins * 60);
+	mins = Play_T.rest_time / 60;
+	rest_secs = Play_T.rest_time - (mins * 60);
 
-	if (is_stop == 0) {
+	if (Play_T.is_stop == 0) {
 		attron(A_BOLD);
 		mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
 		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);

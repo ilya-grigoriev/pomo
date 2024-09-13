@@ -3,40 +3,70 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include "play.h"
 #include "window.h"
 #include "print.h"
 #include "config.def.h"
+#include "play.h"
+#include "settings.h"
 
-static int glob_row, glob_col;
-static WINDOW *glob_play_win;
+int run_work_timer(int row, int col, WINDOW *play_win);
+int run_chill_timer(int row, int col, WINDOW *play_win);
 
-static int is_threads_working = 1;
+struct Play Play_T;
 
 void play(int row, int col, WINDOW *play_win)
 {
-	int is_stop = 0;
-	char ch;
-
-	clock_t rest_work_time = WORK_TIME * 60; // secs
-
-	print_work_clock(row, col, rest_work_time, is_stop);
+	Play_T.is_stop = 0;
 
 	nodelay(play_win, 1);
-	while (rest_work_time > 0 && is_threads_working) {
+	run_work_timer(row, col, play_win);
+	run_chill_timer(row, col, play_win);
+}
+
+int run_work_timer(int row, int col, WINDOW *play_win)
+{
+	Play_T.rest_time = settings_vals[0] * 60; // secs
+	int ch;
+
+	print_clock(row, col, Play_T);
+	while (Play_T.rest_time > 0) {
 		napms(1000);
 
 		ch = wgetch(play_win);
 		if (ch == 'q')
-			return;
+			return 0;
 		else if (ch == 's')
 			break;
 		else if (ch == 'p' || ch == ' ')
-			is_stop = (is_stop == 0) ? 1 : 0;
+			Play_T.is_stop = (Play_T.is_stop == 0) ? 1 : 0;
 
-		if (is_stop == 0)
-			rest_work_time--;
+		if (Play_T.is_stop == 0)
+			Play_T.rest_time--;
 
-		print_work_clock(row, col, rest_work_time, is_stop);
+		print_clock(row, col, Play_T);
+	}
+}
+
+int run_chill_timer(int row, int col, WINDOW *play_win)
+{
+	Play_T.rest_time = SHORT_PAUSE * 60; // secs
+	int ch;
+
+	print_clock(row, col, Play_T);
+	while (Play_T.rest_time > 0) {
+		napms(1000);
+
+		ch = wgetch(play_win);
+		if (ch == 'q')
+			return 0;
+		else if (ch == 's')
+			break;
+		else if (ch == 'p' || ch == ' ')
+			Play_T.is_stop = (Play_T.is_stop == 0) ? 1 : 0;
+
+		if (Play_T.is_stop == 0)
+			Play_T.rest_time--;
+
+		print_clock(row, col, Play_T);
 	}
 }
