@@ -16,10 +16,12 @@ char help_items[HELP_ITEMS][2][100] = {
 	{"j", "\tmove down"},
 	{"k", "\tmove up"},
 	{"q", "\tquit from current window"},
-	{"-", "\tdecrease size of something"},
-	{"+", "\tincrease size of something"},
-	{"l", "\tenter to window or same as `+`"},
-	{"h", "\tsame as `-`"},
+	{"-", "\tdecrease timer for one minute"},
+	{"+", "\tincrease timer for one minute"},
+	{"l", "\tenter to window or increase setting values"},
+	{"h", "\tdecrease settings values"},
+	{"s", "\tskip timer"},
+	{"p", "\tpause timer"},
 };
 
 void help(int row, int col)
