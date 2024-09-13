@@ -1,5 +1,5 @@
 CC=cc
-CFLAGS=-g -lncurses
+CFLAGS=-g -Wall -lncurses
 
 all:
 	@mkdir -p bin/
