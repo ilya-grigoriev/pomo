@@ -10,6 +10,7 @@
 #include "settings.h"
 
 #define QUIT 0
+#define MINUTE 60
 
 struct timer Timer;
 
@@ -40,7 +41,7 @@ void play(int row, int col, WINDOW *play_win)
 
 int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 {
-	Timer.rest_time = settings_vals[Timer.type_timer] * 60;
+	Timer.rest_time = settings_vals[Timer.type_timer] * MINUTE;
 	int ch;
 
 	print_pomodoros(row, col, pomodoros);
@@ -55,6 +56,10 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 			break;
 		else if (ch == 'p' || ch == ' ')
 			Timer.is_stop = (Timer.is_stop == 0) ? 1 : 0;
+		else if (ch == '+')
+			Timer.rest_time += MINUTE;
+		else if (ch == '-')
+			Timer.rest_time -= (Timer.rest_time - MINUTE > 0) ? MINUTE : 0;
 
 		if (Timer.is_stop == 0)
 			Timer.rest_time--;
