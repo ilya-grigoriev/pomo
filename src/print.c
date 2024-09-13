@@ -131,24 +131,42 @@ void print_help_items(int row, int col)
 	}
 }
 
-void print_clock(int row, int col, struct Play Play_T)
+#define LEFT_UPPER_CORNER_X 1
+#define LEFT_UPPER_CORNER_Y 2
+void print_pomodoros(int row, int col, int cur_pomodoros)
+{
+	attron(A_BOLD);
+	attron(COLOR_PAIR(2));
+	mvprintw(LEFT_UPPER_CORNER_X, LEFT_UPPER_CORNER_Y, "%d", cur_pomodoros);
+	attroff(COLOR_PAIR(2));
+	attroff(A_BOLD);
+}
+
+void print_clock(int row, int col, struct timer Timer)
 {
 	int mins, rest_secs;
-	char *message = "Current time";
+	char *message;
 
-	mins = Play_T.rest_time / 60;
-	rest_secs = Play_T.rest_time - (mins * 60);
+	if (Timer.type_timer == TYPE_TIMER_WORK)
+		message = "Current time";
+	else if (Timer.type_timer == TYPE_TIMER_CHILL)
+		message = " Chill time ";
+	else if (Timer.type_timer == TYPE_TIMER_CHILL)
+		message = "Long chill time";
 
-	if (Play_T.is_stop == 0) {
+	mins = Timer.rest_time / 60;
+	rest_secs = Timer.rest_time - (mins * 60);
+
+	attron(A_BOLD);
+	mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
+	attroff(A_BOLD);
+
+	if (Timer.is_stop == 0) {
 		attron(A_BOLD);
-		mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
 		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
 		attroff(A_BOLD);
 	}
 	else {
-		attron(A_BOLD);
-		mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
-		attroff(A_BOLD);
 		attron(A_DIM);
 		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
 		attroff(A_DIM);
