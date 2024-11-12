@@ -151,7 +151,7 @@ void print_clock(int row, int col, struct timer Timer)
 		message = "Current time";
 	else if (Timer.type_timer == TYPE_TIMER_CHILL)
 		message = " Chill time ";
-	else if (Timer.type_timer == TYPE_TIMER_CHILL)
+	else if (Timer.type_timer == TYPE_TIMER_LONG_CHILL)
 		message = "Long chill time";
 
 	mins = Timer.rest_time / 60;
@@ -172,7 +172,7 @@ void print_clock(int row, int col, struct timer Timer)
 		attroff(A_DIM);
 	}
 
-	refresh(); // needed for display screen
+	refresh();
 }
 
 void print_error(char *error_message_template, ...)

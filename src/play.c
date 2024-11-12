@@ -44,6 +44,7 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 	Timer.rest_time = settings_vals[Timer.type_timer] * MINUTE;
 	int ch;
 
+	erase();
 	print_pomodoros(row, col, pomodoros);
 	print_clock(row, col, Timer);
 	while (Timer.rest_time > 0) {
@@ -64,6 +65,7 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 		if (Timer.is_stop == 0)
 			Timer.rest_time--;
 
+		erase();
 		print_pomodoros(row, col, pomodoros);
 		print_clock(row, col, Timer);
 	}
