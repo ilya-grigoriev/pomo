@@ -9,7 +9,7 @@
 #include "play.h"
 #include "settings.h"
 
-#define QUIT 0
+#define QUIT 1
 #define MINUTE 60
 
 struct timer Timer;
