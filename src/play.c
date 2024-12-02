@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <time.h>
 #include "window.h"
 #include "print.h"
@@ -68,6 +69,10 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 		erase();
 		print_pomodoros(row, col, pomodoros);
 		print_clock(row, col, Timer);
+	}
+
+	if (NOTIFICATION) {
+		system("herbe \"timed out\"");
 	}
 }
 
