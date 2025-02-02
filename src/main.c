@@ -8,8 +8,6 @@ int is_error_in_check_config_data(void);
 
 int main()
 {	
-	int row, col;
-
 	if (is_error_in_check_config_data()) {
 		printf("invalid config.def.h\n");
 		return -1;
@@ -18,7 +16,6 @@ int main()
 	initscr();			
 	curs_set(0);
 	noecho();
-	getmaxyx(stdscr,row,col);
 
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -30,7 +27,7 @@ int main()
 
 	refresh();
 
-	startpage(row, col);
+	startpage();
 
 	endwin();
 	return 0;
