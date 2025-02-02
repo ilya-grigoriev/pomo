@@ -5,7 +5,7 @@
 #include "settings.h"
 #include "config.def.h"
 
-char settings_str[SETTINGS_ITEMS][30] = {
+char settings_str[SETTINGS_ITEMS][MAX_LEN_SETTING_ITEM] = {
 	"Work time: <%d>",
 	"Short pause: <%d>",
 	"Long pause: <%d>",
@@ -28,12 +28,14 @@ char settings_logo[SETTINGS_LOGO_ROW][100] = {
 	R"(|____/|_____| |_|   |_| |___|_| \_|\____|____/ )",
 };
 
-void settings(int row, int col, WINDOW *settings_win)
-{
-	int ch;
+void print_settings_win(WINDOW **settings_win);
 
-	print_settings_logo(row, col);
-	print_settings_window(row, col);
+void settings()
+{
+	WINDOW *settings_win;
+	print_settings_win(&settings_win);
+
+	int ch;
 	while ((ch = getch()) != 'q')
 	{
 		if (ch == 'j' || ch == KEY_DOWN)
@@ -52,16 +54,23 @@ void settings(int row, int col, WINDOW *settings_win)
 					print_error("min value is 1\n");
 			else
 				print_error("unavailable motion");
+		else if (ch == KEY_RESIZE)
+			refresh();
 		else
 			print_error("unknown key `%c`", ch);
 
 		delwin(settings_win);
-		print_settings_logo(row, col);
-		print_settings_window(row, col);
-		settings_win = create_newwin(row, col, 0, 0);
+		print_settings_win(&settings_win);
 	}
 
 	cur_settings_active_item = 1;
+}
+
+void print_settings_win(WINDOW **settings_win)
+{
+	print_settings_logo();
+	print_settings_items();
+	*settings_win = create_newwin(getmaxy(stdscr), getmaxx(stdscr), 0, 0);
 }
 
 void reset_settings(void)
