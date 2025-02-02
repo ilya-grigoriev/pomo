@@ -8,29 +8,32 @@
 #include "help.h"
 #include "print.h"
 
-void print_logo(int row, int col)
+#define ROW getmaxy(stdscr)
+#define COL getmaxx(stdscr)
+
+void print_logo(void)
 {
 	char *cur_line;
 	int center_row, center_col;
 
 	for (int i = 0; i < LOGO_ROW; i++) {
 		cur_line = logo[i];
-		center_row = row/2 - LOGO_MARGIN_OF_CENTER + i;
-		center_col = (col-strlen(cur_line)) / 2;
+		center_row = ROW/2 - LOGO_MARGIN_OF_CENTER + i;
+		center_col = (COL-strlen(cur_line)) / 2;
 
 		mvprintw(center_row, center_col, "%s", cur_line);
 	}
 }
 
-void print_menu(int row, int col)
+void print_menu(void)
 {
 	char *cur_line;
 	int center_row, center_col;
 
 	for (int i = 0; i < MENU_ITEMS; i++) {
 		cur_line = menu[i];
-		center_row = row/2 + i;
-		center_col = (col-strlen(cur_line)) / 2;
+		center_row = ROW/2 + i;
+		center_col = (COL-strlen(cur_line)) / 2;
 
 		if (i+1 == cur_menu_active_item) {
 			attron(A_BOLD);
@@ -50,14 +53,13 @@ int is_active_button(int n)
 	return n == cur_settings_active_item;
 }
 
-void print_settings_window(int row, int col)
+void print_settings_items(void)
 {
 	char *cur_line = malloc(sizeof(char *));
-	int center_row, center_col;
 
-	for (int i = 0; i < SETTINGS_ITEMS; i++) {
-		center_row = row/2 + i;
-		center_col = col * 0.4575;
+	int center_row = ROW/2-1;
+	int center_col;
+	for (int i = 0; i < SETTINGS_ITEMS; i++, center_row++) {
 
 		if (i+1 != SETTINGS_ITEMS)
 			sprintf(cur_line, settings_str[i], settings_vals[i]);
@@ -65,8 +67,8 @@ void print_settings_window(int row, int col)
 			mvprintw(center_row, center_col, "");
 			center_row++;
 			sprintf(cur_line, settings_str[i]);
-			center_col = (col - strlen(cur_line)) / 2;
 		}
+		center_col = (COL - strlen(cur_line)) / 2;
 
 		if (is_active_button(i+1)) {
 			attron(A_BOLD);
@@ -81,47 +83,49 @@ void print_settings_window(int row, int col)
 	}
 }
 
-void print_settings_logo(int row, int col)
+void print_settings_logo(void)
 {
 	char *cur_line = malloc(sizeof(char *));
 	int center_row, center_col;
 
 	for (int i = 0; i < SETTINGS_LOGO_ROW; i++) {
 		cur_line = settings_logo[i];
-		center_row = row/2 - SETTINGS_LOGO_MARGIN_OF_CENTER + i;
-		center_col = (col-strlen(cur_line)) / 2;
+		center_row = ROW/2 - SETTINGS_LOGO_MARGIN_OF_CENTER + i;
+		center_col = (COL-strlen(cur_line)) / 2;
 
 		mvprintw(center_row, center_col, "%s", cur_line);
 	}
 }
 
-void print_help_logo(int row, int col)
+void print_help_logo(void)
 {
 	char *cur_line = malloc(sizeof(char *));
 	int center_row, center_col;
 
 	for (int i = 0; i < HELP_LOGO_ROW; i++) {
 		cur_line = help_logo[i];
-		center_row = row/2 - HELP_LOGO_MARGIN_OF_CENTER + i;
-		center_col = (col-strlen(cur_line)) / 2;
+		center_row = ROW/2 - HELP_LOGO_MARGIN_OF_CENTER + i;
+		center_col = (COL-strlen(cur_line)) / 2;
 
 		mvprintw(center_row, center_col, "%s", cur_line);
 	}
 }
 
-void print_help_items(int row, int col)
+#define HOTKEY 0
+#define HELP_MESSAGE 1
+
+void print_help_items(void)
 {
 	char *cur_hotkey = malloc(sizeof(char *));
-	char *cur_help_message = malloc(sizeof(char *));
+	char *cur_help_message = malloc(MAX_LEN_HELP_ITEM * sizeof(char));
 	int center_row, center_col;
 
-	for (int i = 0; i < HELP_ITEMS; i++)
+	center_col = (COL - MAX_LEN_HELP_ITEM) / 2;
+	center_row = ROW/2 - 1;
+	for (int i = 0; i < HELP_ITEMS; i++, center_row++)
 	{
-		center_row = row/2 + i;
-		center_col = col * 0.425;
-
-		cur_hotkey = help_items[i][0];
-		cur_help_message = help_items[i][1];
+		cur_hotkey = help_items[i][HOTKEY];
+		cur_help_message = help_items[i][HELP_MESSAGE];
 		
 		attron(A_BOLD);
 		mvprintw(center_row, center_col, "%s", cur_hotkey);
@@ -133,7 +137,8 @@ void print_help_items(int row, int col)
 
 #define LEFT_UPPER_CORNER_X 1
 #define LEFT_UPPER_CORNER_Y 2
-void print_pomodoros(int row, int col, int cur_pomodoros)
+
+void print_pomodoros(int cur_pomodoros)
 {
 	attron(A_BOLD);
 	attron(COLOR_PAIR(2));
@@ -142,7 +147,7 @@ void print_pomodoros(int row, int col, int cur_pomodoros)
 	attroff(A_BOLD);
 }
 
-void print_clock(int row, int col, struct timer Timer)
+void print_clock(struct timer Timer)
 {
 	int mins, rest_secs;
 	char *message;
@@ -158,17 +163,17 @@ void print_clock(int row, int col, struct timer Timer)
 	rest_secs = Timer.rest_time - (mins * 60);
 
 	attron(A_BOLD);
-	mvprintw(row/2, (col-strlen(message)) / 2, "%s", message);
+	mvprintw(ROW/2, (COL-strlen(message)) / 2, "%s", message);
 	attroff(A_BOLD);
 
 	if (Timer.is_stop == 0) {
 		attron(A_BOLD);
-		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
+		mvprintw(ROW/2+1, (COL-5) / 2, "%02d:%02d", mins, rest_secs);
 		attroff(A_BOLD);
 	}
 	else {
 		attron(A_DIM);
-		mvprintw(row/2+1, (col-5) / 2, "%02d:%02d", mins, rest_secs);
+		mvprintw(ROW/2+1, (COL-5) / 2, "%02d:%02d", mins, rest_secs);
 		attroff(A_DIM);
 	}
 
