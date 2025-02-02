@@ -53,8 +53,8 @@ int run_timer(WINDOW *play_win, int pomodoros)
 	char ch;
 	time_t before = time(NULL);
 	while (Timer.rest_time > 0) {
-		if (difftime(time(NULL), before) >= TRIGGER) {
-			if (Timer.is_stop == 0)
+		if (Timer.is_stop == 0) {
+			if (difftime(time(NULL), before) >= TRIGGER)
 				Timer.rest_time--;
 			before = time(NULL);
 		}
@@ -68,7 +68,12 @@ int run_timer(WINDOW *play_win, int pomodoros)
 		else if (ch == 's')
 			break;
 		else if (ch == 'p' || ch == ' ')
-			Timer.is_stop = (Timer.is_stop == 0) ? 1 : 0;
+			if (Timer.is_stop == 0)
+				Timer.is_stop = 1;
+			else {
+				Timer.is_stop = 0;
+				before = time(NULL);
+			}
 		else if (ch == '+')
 			Timer.rest_time += MINUTE;
 		else if (ch == '-')
