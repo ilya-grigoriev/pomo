@@ -1,7 +1,8 @@
 #define HELP_ITEMS 9
-extern char help_items[HELP_ITEMS][2][100];
+#define MAX_LEN_HELP_ITEM 35 
+extern char help_items[HELP_ITEMS][2][MAX_LEN_HELP_ITEM];
 
-void help(int row, int col);
+void help(void);
 
 #define HELP_LOGO_ROW 5
 extern char help_logo[HELP_LOGO_ROW][30];
