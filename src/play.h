@@ -1,10 +1,10 @@
 #include <ncurses.h>
 #include <time.h>
 
-void run_clock(int row, int col, WINDOW *play_win);
+void run_clock(WINDOW *play_win);
 void get_signal(void);
-void play(int row, int col, WINDOW *play_win);
-int run_timer(int, int, WINDOW*, int pomodoros);
+void play(WINDOW *play_win);
+int run_timer(WINDOW*, int pomodoros);
 
 #define TYPE_TIMER_WORK 0
 #define TYPE_TIMER_CHILL 1

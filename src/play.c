@@ -15,7 +15,7 @@
 
 struct timer Timer;
 
-void play(int row, int col, WINDOW *play_win)
+void play(WINDOW *play_win)
 {
 	int state;
 	int pomodoros = settings_vals[POMODOROS_INDEX];
@@ -34,26 +34,36 @@ void play(int row, int col, WINDOW *play_win)
 		else
 			Timer.type_timer = TYPE_TIMER_CHILL;
 
-		state = run_timer(row, col, play_win, cur_pomodoros);
+		state = run_timer(play_win, cur_pomodoros);
 		if (state == QUIT)
 			break;
 	}
 }
 
-int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
+void print_play_win(int pomodoros);
+
+#define TRIGGER 1.0
+int run_timer(WINDOW *play_win, int pomodoros)
 {
 	Timer.rest_time = settings_vals[Timer.type_timer] * MINUTE;
-	int ch;
 
-	erase();
-	print_pomodoros(row, col, pomodoros);
-	print_clock(row, col, Timer);
+	print_play_win(pomodoros);
+
+	char ch;
+	time_t before = time(NULL);
 	while (Timer.rest_time > 0) {
-		napms(1000);
+		if (difftime(time(NULL), before) >= TRIGGER) {
+			if (Timer.is_stop == 0)
+				Timer.rest_time--;
+			before = time(NULL);
+		}
+		print_play_win(pomodoros);
 
 		ch = wgetch(play_win);
 		if (ch == 'q')
 			return QUIT;
+		else if (ch == KEY_RESIZE)
+			refresh();
 		else if (ch == 's')
 			break;
 		else if (ch == 'p' || ch == ' ')
@@ -63,12 +73,7 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 		else if (ch == '-')
 			Timer.rest_time -= (Timer.rest_time - MINUTE > 0) ? MINUTE : 0;
 
-		if (Timer.is_stop == 0)
-			Timer.rest_time--;
-
-		erase();
-		print_pomodoros(row, col, pomodoros);
-		print_clock(row, col, Timer);
+		napms(1000/60);
 	}
 
 	if (NOTIFICATION) {
@@ -76,3 +81,8 @@ int run_timer(int row, int col, WINDOW *play_win, int pomodoros)
 	}
 }
 
+void print_play_win(int pomodoros) {
+	erase();
+	print_pomodoros(pomodoros);
+	print_clock(Timer);
+}
