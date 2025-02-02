@@ -1,1 +1,1 @@
-void startpage(int row, int col);
+void startpage(void);
