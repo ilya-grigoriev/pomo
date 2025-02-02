@@ -9,6 +9,7 @@
 #include "config.def.h"
 #include "play.h"
 #include "settings.h"
+#include "args.h"
 
 #define QUIT 1
 #define MINUTE 60
